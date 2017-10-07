@@ -1,11 +1,8 @@
 # docker build -t romach007/java8:1.0.0 -t romach007/java8:latest .
 # docker run -id --name java8 romach007/java8
-# docker exec -it ubuntu /bin/bash
+# docker exec -u user -it java8 /bin/bash
 FROM ubuntu:16.04
 LABEL maintainer="romach007@gmail.com"
-
-# create user
-RUN adduser --disabled-password --gecos "" user
 
 # update packages
 RUN apt-get update
@@ -28,3 +25,15 @@ RUN echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-sel
 
 # install java 8
 RUN apt-get install -y oracle-java8-installer
+
+# install sudo
+RUN apt-get -y install sudo
+
+# create user
+RUN adduser --disabled-password --gecos "" user
+
+# allow user to use sudo without entering password
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# add root privilages to user
+RUN gpasswd -a user sudo
